@@ -1,0 +1,21 @@
+{
+    "name": "albertxhani/quechedra",
+    "description": "Background processing for php",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Albert Xhani",
+            "email": "albert.xhani@outlook.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Quechedra\\": "src/"
+        }
+    }
+}
