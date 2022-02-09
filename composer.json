@@ -12,7 +12,9 @@
             "email": "albert.xhani@outlook.com"
         }
     ],
-    "require": {},
+    "require": {
+        "symfony/console": "^5.4"
+    },
     "autoload": {
         "psr-4": {
             "Quechedra\\": "src/"
