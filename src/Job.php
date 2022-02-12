@@ -54,4 +54,16 @@ class Job
         return $this;
     }
 
+    /**
+     * Push Job to queue. Arguments passed to this function
+     * showld be one of: string, bool, number, array
+     *
+     * @return void
+     */
+    public function processAsync()
+    {
+        $args = func_get_args();
+        // Manager::push($this, $args);
+    }
+
 }
