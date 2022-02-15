@@ -2,7 +2,9 @@
 
 namespace Quechedra;
 
-class RedisConnector
+use Quechedra\Contracts\ConnectorInterface;
+
+class RedisConnector implements ConnectorInterface
 {
 
     /**
