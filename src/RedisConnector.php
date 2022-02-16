@@ -29,7 +29,7 @@ class RedisConnector implements ConnectorInterface
      *
      * @return Redis
      */
-    public function create($config)
+    public function create($config = [])
     {
 
         if ($this->instance) return $this->instance;
