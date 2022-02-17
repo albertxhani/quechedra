@@ -55,6 +55,25 @@ class Job
     }
 
     /**
+     * Get number of how many times a job should be retried. If
+     * retry is set to true, set a default nummber of retries
+     *
+     * @return mixed
+     */
+    public function getRetries()
+    {
+        if(is_numeric($this->retry)) {
+            return $this->retry;
+        }
+
+        if($this->retry) {
+            return 20;
+        }
+
+        return false;
+    }
+
+    /**
      * Push Job to queue. Arguments passed to this function
      * showld be one of: string, bool, number, array
      *
