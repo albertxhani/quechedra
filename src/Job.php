@@ -74,6 +74,16 @@ class Job
     }
 
     /**
+     * get queue the job should be added to
+     *
+     * @return string
+     */
+    public function getQueue()
+    {
+        return $this->queue;
+    }
+
+    /**
      * Push Job to queue. Arguments passed to this function
      * showld be one of: string, bool, number, array
      *
