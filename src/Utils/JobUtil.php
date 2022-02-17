@@ -30,11 +30,23 @@ class JobUtil
         }
 
         return [
+            "id"    => self::uniqueId(),
             "queue" => $job->getQueue() ?? "default",
             "class" => get_class($job),
             "args"  => json_encode($args, true),
             "retry" => $job->getRetries()
         ];
+    }
+
+    /**
+     * Generate a unique Id for the job
+     *
+     * @return string
+     */
+    public static function uniqueId()
+    {
+        $bytes = random_bytes(12);
+        return bin2hex($bytes);
     }
 
 }
