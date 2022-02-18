@@ -3,7 +3,6 @@
 namespace Quechedra;
 
 use Quechedra\Contracts\ConnectorInterface;
-
 class RedisConnector implements ConnectorInterface
 {
 
@@ -35,7 +34,12 @@ class RedisConnector implements ConnectorInterface
         if ($this->instance) return $this->instance;
 
         $redis = new \Redis();
-        $redis->connect(...array_values($config));
+        $redis->connect($config["host"], $config["port"]);
+
+        if (isset($config["auth"]["username"])) {
+            [$username, $password] = $config["auth"];
+            $redis->auth($username, $password);
+        }
 
         return $this->instance = $redis;
     }
