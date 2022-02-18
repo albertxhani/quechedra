@@ -4,6 +4,7 @@ namespace Quechedra;
 
 use Symfony\Component\Yaml\Yaml;
 use Quechedra\RedisConnector;
+use Quechedra\ClientOptions;
 
 class Client
 {
@@ -18,6 +19,11 @@ class Client
     private $connection = null;
 
     /**
+     * Options
+     */
+    private $options = null;
+
+    /**
      * Initialize class
      */
     private function __construct()
@@ -26,7 +32,7 @@ class Client
     }
 
     /**
-     * FGet Client Instance
+     * Get Client Instance
      *
      * @return Client
      */
@@ -68,6 +74,29 @@ class Client
     {
         $this->connection = (new RedisConnector())
             ->create($redis_config);
+    }
+
+    /**
+     * Set values to the options object
+     *
+     * @param string $name
+     * @param mixed  $value
+     */
+    function __set($name, $value)
+    {
+        $this->options->$name = $value;
+    }
+
+    /**
+     * Get value from options
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    function __get($name)
+    {
+        return $this->options->$name;
     }
 
 }
