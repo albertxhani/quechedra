@@ -28,7 +28,9 @@ class Client
      */
     private function __construct()
     {
+        $this->options = new ClientOptions();
         $this->configYaml();
+        $this->setConnection($this->options->redis);
     }
 
     /**
@@ -52,15 +54,10 @@ class Client
      */
     private function configYaml()
     {
-
-        $path = __DIR__ . "/../quechedra.yaml";
-        try {
-            $config = Yaml::parseFile($path);
-        } catch(\Exception $e) {
-            throw new \Exception("Yaml file could not be found");
+        $config = Yaml::parseFile(__DIR__ . "/../quechedra.yaml");
+        foreach($config as $key => $value) {
+            $this->__set($key, $value);
         }
-
-        $this->setConnection($config["redis"]);
     }
 
     /**

@@ -13,7 +13,7 @@ class ClientOptions
         ]
     ];
 
-    public $concurreny = "10";
+    public $concurrency = "10";
 
     public $retries = 20;
 
