@@ -26,5 +26,6 @@
         "psr-4": {
             "Quechedra\\Test\\": "tests/"
         }
-    }
+    },
+    "bin": "bin/quechedra"
 }
