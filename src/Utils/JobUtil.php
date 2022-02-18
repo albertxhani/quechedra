@@ -1,6 +1,6 @@
 <?php
 
-namespace Quechedra;
+namespace Quechedra\Utils;
 
 use Exception;
 use InvalidArgumentException;
