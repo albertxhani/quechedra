@@ -29,7 +29,7 @@ class Client
     private function __construct()
     {
         $this->options = new ClientOptions();
-        $this->configYaml();
+        $this->defaultConfig();
         $this->setConnection($this->options->redis);
     }
 
@@ -52,11 +52,25 @@ class Client
      *
      * @return void
      */
-    private function configYaml()
+    public function configureFromFile($path)
     {
-        $config = Yaml::parseFile(__DIR__ . "/../quechedra.yaml");
+        $config = Yaml::parseFile($path);
         foreach($config as $key => $value) {
             $this->__set($key, $value);
+        }
+    }
+
+    /**
+     * If quechedra.yaml file exists load configurations
+     * from there
+     *
+     * @return void
+     */
+    private function defaultConfig()
+    {
+        $path = __DIR__ . "/../quechedra.yaml";
+        if(\file_exists($path)) {
+            $this->configureFromFile($path);
         }
     }
 
