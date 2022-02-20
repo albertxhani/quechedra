@@ -16,7 +16,7 @@ class Client
      *
      * @var RedisConnector
      */
-    private $connection = null;
+    public $connection = null;
 
     /**
      * Options

@@ -2,6 +2,7 @@
 
 namespace Quechedra;
 
+use Quechedra\Utils\JobUtil;
 class Job
 {
 
@@ -92,7 +93,9 @@ class Job
     public function processAsync()
     {
         $args = func_get_args();
-        // Manager::push($this, $args);
+
+        $payload = JobUtil::buildPayload($this, $args);
+        (new Manager())->push($payload);
     }
 
 }
