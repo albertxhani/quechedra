@@ -18,10 +18,20 @@ class Client
      */
     public $connection = null;
 
+
     /**
      * Options
+     *
+     * @var ClientOptions
      */
     private $options = null;
+
+    /**
+     * Managet Instance
+     *
+     * @var Manager
+     */
+    private $manager = null;
 
     /**
      * Initialize class
@@ -85,6 +95,17 @@ class Client
     {
         $this->connection = (new RedisConnector())
             ->create($redis_config);
+    }
+
+    /**
+     * Set Manager
+     *
+     * @return void
+     */
+    public function getManager()
+    {
+        return ($this->manager) ?
+            $this->manager : new Manager($this->connection);
     }
 
     /**

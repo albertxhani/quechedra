@@ -23,8 +23,11 @@ class Job
      */
     protected $retry = true;
 
+    protected $manager = null;
 
-    function __construct() { }
+    function __construct() {
+        $this->manager = Client::getInstance()->getManager();
+    }
 
     /**
      * Change queue for a single job. This will not change the queue for incoming jobs
@@ -95,7 +98,7 @@ class Job
         $args = func_get_args();
 
         $payload = JobUtil::buildPayload($this, $args);
-        (new Manager())->push($payload);
+        $this->manager->push($payload);
     }
 
 }
