@@ -36,7 +36,9 @@ class Manager
     public function pop($queues = false)
     {
         $queues = $this->getQueues();
-        return $this->connection->brPop($queues, 1);
+        $result = $this->connection->brPop($queues, 1);
+
+        return (count($result) > 0) ? $result[1] : false;
     }
 
     /**

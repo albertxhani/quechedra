@@ -33,7 +33,7 @@ class JobUtil
             "id"    => self::uniqueId(),
             "queue" => $job->getQueue() ?? "default",
             "class" => get_class($job),
-            "args"  => json_encode($args, true),
+            "args"  => $args,
             "retry" => $job->getRetries()
         ];
     }
@@ -47,6 +47,26 @@ class JobUtil
     {
         $bytes = random_bytes(12);
         return bin2hex($bytes);
+    }
+
+    /**
+     * Construct Job object and arguments to be passed
+     * to the process function
+     *
+     * @param string $payload Job information
+     *
+     * @return array
+     */
+    public static function constructJob($payload)
+    {
+        $payload = json_decode($payload, true);
+        $class = $payload["class"];
+
+        // Job cnstruction errors to be handled here
+        $job = new $class();
+        $args = $payload["args"];
+
+        return [$job, $args];
     }
 
 }
