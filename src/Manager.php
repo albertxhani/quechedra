@@ -31,12 +31,12 @@ class Manager
      *
      * @param boolean $queues
      *
-     * @return atring
+     * @return array
      */
     public function pop($queues = false)
     {
-        $queues = $queues ?? $this->getQueues();
-        return $this->connection->brPop($queues);
+        $queues = $this->getQueues();
+        return $this->connection->brPop($queues, 1);
     }
 
     /**
@@ -44,9 +44,15 @@ class Manager
      *
      * @return void
      */
-    private function getQueues()
+    public function getQueues()
     {
         $queues = $this->connection->sMembers('queues');
-        return \shuffle($queues);
+
+        foreach($queues as $key => $queue) {
+            $queues[$key] = "queue:{$queue}";
+        }
+
+        \shuffle($queues);
+        return $queues;
     }
 }
