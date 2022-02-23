@@ -13,4 +13,13 @@ class Application extends RootApplication
         return Cli::footprint();
     }
 
+    protected function getDefaultCommands(): array
+    {
+        $commands = array_merge(parent::getDefaultCommands(), array(
+            new Commands\RunCommand()
+        ));
+
+        return $commands;
+    }
+
 }
