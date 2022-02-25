@@ -68,7 +68,7 @@ class Logger
     {
         return (
             array_search($level, $this->levels)
-             >= array_search($this->level, $this->levels)
+             <= array_search($this->level, $this->levels)
         );
     }
 }
