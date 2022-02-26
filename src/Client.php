@@ -5,6 +5,7 @@ namespace Quechedra;
 use Symfony\Component\Yaml\Yaml;
 use Quechedra\RedisConnector;
 use Quechedra\ClientOptions;
+use Quechedra\Logger;
 
 class Client
 {
@@ -32,6 +33,14 @@ class Client
      * @var Manager
      */
     private $manager = null;
+
+
+    /**
+     * Logger Instance
+     *
+     * @var Logger
+     */
+    private $logger = null;
 
     /**
      * Initialize class
@@ -100,12 +109,25 @@ class Client
     /**
      * Set Manager
      *
-     * @return void
+     * @return Manager
      */
     public function getManager()
     {
         return ($this->manager) ?
             $this->manager : new Manager($this->connection);
+    }
+
+    /**
+     * Get Logger
+     *
+     * @param mixed $streamer Output streamer
+     *
+     * @return Logger
+     */
+    public function getLogger($streamer)
+    {
+        return ($this->logger) ?
+            $this->logger : new Logger($streamer, $this->options->log_level);
     }
 
     /**

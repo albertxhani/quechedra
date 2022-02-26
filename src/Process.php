@@ -6,9 +6,12 @@ use Quechedra\Utils\JobUtil;
 
 class Process
 {
-    public function __construct()
+    public function __construct($streamer)
     {
-        $this->manager = Client::getInstance()->getManager();
+        $client = Client::getInstance();
+
+        $this->manager = $client->getManager();
+        $this->logger = $client->getLogger($streamer);
     }
 
     /**

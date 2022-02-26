@@ -17,4 +17,5 @@ class ClientOptions
 
     public $retries = 20;
 
+    public $log_level = "debug";
 }
