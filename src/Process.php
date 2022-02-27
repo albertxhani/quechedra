@@ -23,22 +23,49 @@ class Process
     {
         while(true) {
 
-            $payload = $this->manager->pop();
-
+            $payload = $this->getJobPayload();
             if(!$payload) {
-                sleep(10);
+                $this->sleep(5);
                 continue;
             }
 
-            [$job, $arguments] = JobUtil::constructJob($payload);
-
             try {
-                $job->process(...$arguments);
-                sleep(2);
+                $job = JobUtil::constructJob($payload);
+
+                $this->beforeProcessing($job->getId());
+
+                $job->process(...$payload["args"]);
+
+                $this->jobProccessed($job->getId());
+
+                $this->sleep(2);
             } catch(\Exception $e) {
-                // to be handled
+                $this->logger->log("Job Failed", "error");
             }
         }
     }
 
+    /**
+     * Get a job from the queue
+     *
+     * @return array
+     */
+    private function getJobPayload()
+    {
+        return $this->manager->pop();
+    }
+
+    private function sleep($seconds) {
+        sleep($seconds);
+    }
+
+    private function beforeProcessing($id)
+    {
+        $this->logger->log("Processing Job $id", "debug");
+    }
+
+    private function jobProccessed($id)
+    {
+        $this->logger->log("Job Proccessed: $id", "debug");
+    }
 }

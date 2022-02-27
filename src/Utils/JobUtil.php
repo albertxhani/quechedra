@@ -55,18 +55,25 @@ class JobUtil
      *
      * @param string $payload Job information
      *
-     * @return array
+     * @return Job
      */
     public static function constructJob($payload)
     {
         $payload = json_decode($payload, true);
         $class = $payload["class"];
 
-        // Job cnstruction errors to be handled here
-        $job = new $class();
-        $args = $payload["args"];
+        if(!class_exists($class)) {
+            throw new \Exception("Class $class does not exist");
+        }
 
-        return [$job, $args];
+        $job = new $class();
+        $job->setId($payload["id"]);
+
+        if (!is_callable(array($job, 'proccess'))) {
+            throw new \Exception("Class $class does not have a callable proccess function");
+        }
+
+        return $job;
     }
 
 }
