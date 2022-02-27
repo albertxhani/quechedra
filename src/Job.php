@@ -7,6 +7,14 @@ class Job
 {
 
     /**
+     * Unique Identifier. Gets generated when the job is
+     * saved in a queue
+     *
+     * @var string
+     */
+    protected $id = null;
+
+    /**
      * Queue where the job will be proccessed
      *
      * @var string
@@ -85,6 +93,28 @@ class Job
     public function getQueue()
     {
         return $this->queue;
+    }
+
+    /**
+     * Set unique identifier
+     *
+     * @param string $id
+     *
+     * @return void
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * Get Identifier
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
