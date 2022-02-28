@@ -14,6 +14,7 @@
         }
     ],
     "require": {
+        "ext-redis": "*",
         "symfony/console": "^5.4",
         "symfony/yaml": "^5.4"
     },
