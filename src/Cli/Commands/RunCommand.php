@@ -4,6 +4,7 @@ namespace Quechedra\Cli\Commands;
 
 use Quechedra\Utils\Cli;
 use Quechedra\Process;
+use Quechedra\Cli\OutputStreamer;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,7 +35,10 @@ class RunCommand extends Command
         }
 
         $output->writeln("Starting Process ...");
-        $process = new Process();
+
+        $streamer = new OutputStreamer($output);
+
+        $process = new Process($streamer);
         $process->run();
 
         return 0;

@@ -24,6 +24,7 @@ class Process
         while(true) {
 
             $payload = $this->getJobPayload();
+
             if(!$payload) {
                 $this->sleep(5);
                 continue;
@@ -34,13 +35,13 @@ class Process
 
                 $this->beforeProcessing($job->getId());
 
-                $job->process(...$payload["args"]);
+                $this->proccessJob($job, $payload["args"]);
 
                 $this->jobProccessed($job->getId());
 
                 $this->sleep(2);
             } catch(\Exception $e) {
-                $this->logger->log("Job Failed", "error");
+                $this->logger->log("Job Failed with message: {$e->getMessage()}", "error");
             }
         }
     }
@@ -55,15 +56,42 @@ class Process
         return $this->manager->pop();
     }
 
+    /**
+     * Proccess job
+     *
+     * @param Job   $job
+     * @param array $arguments
+     *
+     * @return void
+     */
+    private function proccessJob($job, $arguments)
+    {
+        $job->process(...$arguments);
+    }
+
     private function sleep($seconds) {
         sleep($seconds);
     }
 
+    /**
+     * Called before job is proccessed
+     *
+     * @param string $id Job Id
+     *
+     * @return void
+     */
     private function beforeProcessing($id)
     {
         $this->logger->log("Processing Job $id", "debug");
     }
 
+    /**
+     * Called after job is proccessed
+     *
+     * @param string $id Job Id
+     *
+     * @return void
+     */
     private function jobProccessed($id)
     {
         $this->logger->log("Job Proccessed: $id", "debug");
