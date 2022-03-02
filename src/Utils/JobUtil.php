@@ -73,6 +73,13 @@ class JobUtil
             throw new \Exception("Class $class does not have a callable proccess function");
         }
 
+        $method = new \ReflectionMethod($class, 'process');
+        $no_arguments = $method->getNumberOfParameters();
+
+        if ($no_arguments !== count($payload["args"])) {
+            throw new \Exception("process function on $class has wrong number of arguments");
+        }
+
         return $job;
     }
 
