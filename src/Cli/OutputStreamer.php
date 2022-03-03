@@ -64,7 +64,7 @@ class OutputStreamer {
      */
     function error($text)
     {
-        $this->log("<error>{$text}</error>");
+        $this->log($this->timestamp("fail") . $text);
     }
 
     /**
@@ -86,8 +86,19 @@ class OutputStreamer {
      */
     private function registerTags()
     {
-        $outputStyle = new OutputFormatterStyle('cyan', '', ['bold', 'blink']);
-        $this->output->getFormatter()->setStyle('quechedra', $outputStyle);
+        $styles = [
+            "fail" => [
+                "red", "", ["bold"]
+            ],
+            "quechedra" => [
+                "cyan", "", ["bold", "blink"]
+            ]
+        ];
+
+        foreach($styles as $tag => $values) {
+            $outputStyle = new OutputFormatterStyle(...$values);
+            $this->output->getFormatter()->setStyle($tag, $outputStyle);
+        }
     }
 
     /**
@@ -95,9 +106,9 @@ class OutputStreamer {
      *
      * @return void
      */
-    private function timestamp()
+    private function timestamp($tag = "info")
     {
-        return "<info>[" . \gmdate("Y-m-d\TH:i:s\Z") . "]</info> ";
+        return "<{$tag}>[" . \gmdate("Y-m-d\TH:i:s\Z") . "]</{$tag}> ";
     }
 
 }
