@@ -53,13 +53,12 @@ class JobUtil
      * Construct Job object and arguments to be passed
      * to the process function
      *
-     * @param string $payload Job information
+     * @param array $payload Job information
      *
      * @return Job
      */
     public static function constructJob($payload)
     {
-        $payload = json_decode($payload, true);
         $class = $payload["class"];
 
         if(!class_exists($class)) {
@@ -69,7 +68,7 @@ class JobUtil
         $job = new $class();
         $job->setId($payload["id"]);
 
-        if (!is_callable(array($job, 'proccess'))) {
+        if (!is_callable(array($job, 'process'))) {
             throw new \Exception("Class $class does not have a callable proccess function");
         }
 

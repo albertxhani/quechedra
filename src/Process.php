@@ -23,25 +23,30 @@ class Process
     {
         while(true) {
 
-            $payload = $this->getJobPayload();
+            $payload = $this->getPayload();
 
             if(!$payload) {
                 $this->sleep(5);
                 continue;
             }
 
-            try {
-                $job = JobUtil::constructJob($payload);
+            $job = $this->getJob($payload);
+            if(!$job) continue;
 
+            try {
+
+                // Log message before processing the job
                 $this->beforeProcessing($job->getId());
 
-                $this->proccessJob($job, $payload["args"]);
+                // Proccess job
+                $this->proccess($job, $payload["args"]);
 
+                // Log message when job has finnished processing
                 $this->jobProccessed($job->getId());
 
                 $this->sleep(2);
             } catch(\Exception $e) {
-                $this->logger->log("Job Failed with message: {$e->getMessage()}", "error");
+                $this->report($e);
             }
         }
     }
@@ -51,9 +56,29 @@ class Process
      *
      * @return array
      */
-    private function getJobPayload()
+    private function getPayload()
     {
-        return $this->manager->pop();
+        $payload = $this->manager->pop();
+
+        if(!$payload) return false;
+
+        return json_decode($payload, true);
+    }
+
+    /**
+     * Get Job object based on payload
+     *
+     * @param array $payload job Payload from redis
+     *
+     * @return Job
+     */
+    public function getJob($payload)
+    {
+        try {
+            return JobUtil::constructJob($payload);
+        } catch(\Exception $e) {
+            $this->report($e);
+        }
     }
 
     /**
@@ -64,13 +89,22 @@ class Process
      *
      * @return void
      */
-    private function proccessJob($job, $arguments)
+    private function proccess($job, $arguments)
     {
+        \ob_start();
         $job->process(...$arguments);
+        \ob_end_clean();
     }
 
+    /**
+     * Sleep for a given number of seconds
+     *
+     * @param integer $seconds
+     *
+     * @return void
+     */
     private function sleep($seconds) {
-        sleep($seconds);
+        \sleep($seconds);
     }
 
     /**
@@ -96,4 +130,17 @@ class Process
     {
         $this->logger->log("Job Proccessed: $id", "debug");
     }
+
+    /**
+     * Log exception
+     *
+     * @param \Exception $exception
+     *
+     * @return void
+     */
+    private function report($exception)
+    {
+        $this->logger->log("Job failed with message: " . $exception->getMessage(), 'error');
+    }
+
 }
