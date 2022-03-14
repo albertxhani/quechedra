@@ -13,7 +13,7 @@ class JobUtil
     /**
      * Build payload for a given Job
      *
-     * @param Job $job    Job object
+     * @param Job   $job  Job object
      * @param array $args Job arguments
      *
      * @return array
@@ -21,12 +21,14 @@ class JobUtil
     public static function buildPayload($job, $args)
     {
 
-        if(!$job instanceof Job)
+        if (!$job instanceof Job) {
             throw new Exception("Class {get_class($job)} is not insance of Quechedra\Job");
+        }
 
-        foreach($args as $arg) {
-            if(is_object($arg))
+        foreach ($args as $arg) {
+            if (is_object($arg)) {
                 throw new InvalidArgumentException("Arguments passed to job should not be objects");
+            }
         }
 
         return [
@@ -61,7 +63,7 @@ class JobUtil
     {
         $class = $payload["class"];
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new \Exception("Class $class does not exist");
         }
 
