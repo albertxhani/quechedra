@@ -58,7 +58,8 @@ class Job
      * reaches the max number of executions set by the global config
      *
      * @param integer|bool $value Retry value
-     * @return void
+     *
+     * @return self
      */
     public function retry($value)
     {
@@ -74,11 +75,11 @@ class Job
      */
     public function getRetries()
     {
-        if(is_numeric($this->retry)) {
+        if (is_numeric($this->retry)) {
             return $this->retry;
         }
 
-        if($this->retry) {
+        if ($this->retry) {
             return 20;
         }
 

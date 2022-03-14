@@ -21,31 +21,33 @@ class Process
      */
     public function run()
     {
-        while(true) {
+        while (true) {
 
             $payload = $this->getPayload();
 
-            if(!$payload) {
+            if (!$payload) {
                 $this->sleep(5);
                 continue;
             }
 
-            $job = $this->getJob($payload);
-            if(!$job) continue;
+            $resolver = $this->getJobResolver($payload);
 
             try {
+
+                $job = $resolver->getJob();
 
                 // Log message before processing the job
                 $this->beforeProcessing($job->getId());
 
                 // Proccess job
-                $this->proccess($job, $payload["args"]);
+                $resolver->processJob();
 
                 // Log message when job has finnished processing
                 $this->jobProccessed($job->getId());
 
                 $this->sleep(2);
             } catch(\Exception $e) {
+                $this->handleFailedJob($resolver);
                 $this->report($e);
             }
         }
@@ -60,7 +62,7 @@ class Process
     {
         $payload = $this->manager->pop();
 
-        if(!$payload) return false;
+        if (!$payload) return false;
 
         return json_decode($payload, true);
     }
@@ -70,40 +72,26 @@ class Process
      *
      * @param array $payload job Payload from redis
      *
-     * @return Job
+     * @return Resolver
      */
-    public function getJob($payload)
+    public function getJobResolver($payload)
     {
         try {
-            return JobUtil::constructJob($payload);
+            return new Resolver($payload);
         } catch(\Exception $e) {
             $this->report($e);
         }
     }
 
     /**
-     * Proccess job
-     *
-     * @param Job   $job
-     * @param array $arguments
-     *
-     * @return void
-     */
-    private function proccess($job, $arguments)
-    {
-        \ob_start();
-        $job->process(...$arguments);
-        \ob_end_clean();
-    }
-
-    /**
      * Sleep for a given number of seconds
      *
-     * @param integer $seconds
+     * @param integer $seconds Number of seconds to sleep
      *
      * @return void
      */
-    private function sleep($seconds) {
+    private function sleep($seconds)
+    {
         \sleep($seconds);
     }
 
@@ -134,13 +122,31 @@ class Process
     /**
      * Log exception
      *
-     * @param \Exception $exception
+     * @param \Exception $exception Exception that occured
      *
      * @return void
      */
     private function report($exception)
     {
         $this->logger->log("Job failed with message: " . $exception->getMessage(), 'error');
+    }
+
+    /**
+     * Decides what will happen if a job fails
+     *
+     * @param Resolver $resolver Job Resover
+     *
+     * @return void
+     */
+    private function handleFailedJob($resolver)
+    {
+        $payload = $resolver->failed();
+
+        if ($resolver->canRequeue()) {
+            $this->manager->requeue($payload, strtotime("now + 5minutes"));
+        } else {
+            $this->manager->graveyard($payload);
+        }
     }
 
 }

@@ -41,6 +41,16 @@ class Manager
         return (count($result) > 0) ? $result[1] : false;
     }
 
+    public function requeue($payload, $time)
+    {
+
+    }
+
+    public function graveyard($payload)
+    {
+
+    }
+
     /**
      * Get all queues saved on redis
      *
@@ -50,7 +60,7 @@ class Manager
     {
         $queues = $this->connection->sMembers('queues');
 
-        foreach($queues as $key => $queue) {
+        foreach ($queues as $key => $queue) {
             $queues[$key] = "queue:{$queue}";
         }
 
